@@ -13,6 +13,7 @@
 @interface AppDelegate : NSObject <UIApplicationDelegate> {
 	UIWindow			*window;
 	RootViewController	*viewController;
+    UIView              *overlay;
 }
 
 @property (nonatomic, retain) UIWindow *window;

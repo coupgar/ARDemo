@@ -62,7 +62,7 @@
 	//
 	//
 	EAGLView *glView = [EAGLView viewWithFrame:[window bounds]
-								   pixelFormat:kEAGLColorFormatRGB565	// kEAGLColorFormatRGBA8
+								   pixelFormat:kEAGLColorFormatRGBA8	// kEAGLColorFormatRGBA8
 								   depthFormat:0						// GL_DEPTH_COMPONENT16_OES
 						];
 	
@@ -97,6 +97,47 @@
 	
 	// make the View Controller a child of the main window
 	[window addSubview: viewController.view];
+    
+    
+    // set the background color of the view
+    [CCDirector sharedDirector].openGLView.backgroundColor = [UIColor clearColor];
+    [CCDirector sharedDirector].openGLView.opaque = NO;
+    
+    // set value for glClearColor
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    
+    // prepare the overlay view and add it to the window
+    overlay = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    overlay.opaque = NO;
+    overlay.backgroundColor=[UIColor clearColor];
+    [window addSubview:overlay];
+    
+#define CAMERA_TRANSFORM  1.24299
+    
+    UIImagePickerController *uip;
+    
+    @try {
+        uip = [[[UIImagePickerController alloc] init] autorelease];
+        uip.sourceType = UIImagePickerControllerSourceTypeCamera;
+        uip.showsCameraControls = NO;
+        uip.toolbarHidden = YES;
+        uip.navigationBarHidden = YES;
+        uip.wantsFullScreenLayout = YES;
+        uip.cameraViewTransform = CGAffineTransformScale(uip.cameraViewTransform, 
+                                                         CAMERA_TRANSFORM, CAMERA_TRANSFORM);
+    }
+    @catch (NSException * e) {
+        [uip release];
+        uip = nil;
+    }
+    @finally {
+        if(uip) {
+            [overlay addSubview:[uip view]];
+            [overlay release];
+        }
+    }
+    
+    [window bringSubviewToFront:viewController.view];
 	
 	[window makeKeyAndVisible];
 	
